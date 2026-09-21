@@ -79,13 +79,12 @@ modules:
   - name: ecosiabrowser-prebuilt
     buildsystem: simple
     build-commands:
+      - install -Dm755 ecosiabrowser.sh /app/bin/ecosiabrowser
       - unsquashfs -quiet -no-progress ecosia.snap
       - mv squashfs-root/app/share/icons /app/share/icons
       - mv squashfs-root/app/share/metainfo /app/share/metainfo
       - mv squashfs-root/opt/ecosia /app/ecosia
       - mv squashfs-root/usr/share/applications /app/share/applications
-      - mv ecosiabrowser.sh /app/bin/ecosiabrowser
-      - chmod +X /app/bin/ecosiabrowser
     sources:
       - type: file
         url: https://api.snapcraft.io/api/v1/snaps/download/2MakkUunZD1vJLykl5QmmVDQAZdE84wY_6.snap
