@@ -84,7 +84,7 @@ modules:
       - mv squashfs-root/app/share/metainfo /app/share/metainfo
       - mv squashfs-root/opt/ecosia /app/share/ecosia
       - mv squashfs-root/usr/share/applications /app/share/applications
-      - mv launch.sh /app/bin/ecosiabrowser
+      - mv ecosiabrowser.sh /app/bin/ecosiabrowser
       - chmod +X /app/bin/ecosiabrowser
     sources:
       - type: file
@@ -97,6 +97,9 @@ modules:
           channel: stable
           is-main-source: true
       - type: script
-        dest-filename: launch.sh
+        dest-filename: ecosiabrowser.sh
         commands:
-          - /app/share/ecosia/chrome --no-sandbox $@
+          - |
+            export ZYPAK_EXPOSE_WIDEVINE_PATH=$HOME/.var/app/org.ecosia.Browser/config/EcosiaBrowser/WidevineCdm
+            export CHROME_WRAPPER="/app/bin/ecosiabrowser"
+            exec /app/bin/zypak-wrapper.sh /app/ecosia/chrome --class=org.ecosia.Browser ${CHROME_FLAGS:-} "$@"
