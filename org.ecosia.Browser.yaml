@@ -82,7 +82,7 @@ modules:
       - unsquashfs -quiet -no-progress ecosia.snap
       - mv squashfs-root/app/share/icons /app/share/icons
       - mv squashfs-root/app/share/metainfo /app/share/metainfo
-      - mv squashfs-root/opt/ecosia /app/share/ecosia
+      - mv squashfs-root/opt/ecosia /app/ecosia
       - mv squashfs-root/usr/share/applications /app/share/applications
       - mv ecosiabrowser.sh /app/bin/ecosiabrowser
       - chmod +X /app/bin/ecosiabrowser
