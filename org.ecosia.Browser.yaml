@@ -85,6 +85,7 @@ modules:
       - mv squashfs-root/app/share/metainfo /app/share/metainfo
       - mv squashfs-root/opt/ecosia /app/ecosia
       - mv squashfs-root/usr/share/applications /app/share/applications
+      - desktop-file-edit --set-icon=org.ecosia.Browser /app/share/applications/org.ecosia.Browser.desktop
     sources:
       - type: file
         url: https://api.snapcraft.io/api/v1/snaps/download/2MakkUunZD1vJLykl5QmmVDQAZdE84wY_6.snap
