@@ -1,9 +1,7 @@
 app-id: org.ecosia.Browser
 runtime: org.freedesktop.Platform
-runtime-version: '25.08'
+runtime-version: '26.08'
 sdk: org.freedesktop.Sdk
-base: org.chromium.Chromium.BaseApp
-base-version: '25.08'
 command: ecosiabrowser
 separate-locales: false
 
@@ -76,28 +74,29 @@ modules:
           type: git
           tag-pattern: ^v([\d.]+)$
 
+  - shared-modules/squashfs-tools/squashfs-tools.json
+
   - name: ecosiabrowser-prebuilt
     buildsystem: simple
     build-commands:
-      - install -Dm755 ecosiabrowser.sh /app/bin/ecosiabrowser
-      - install -d /app/ecosia
-      - cp -a ecosia/. /app/ecosia
-      - |
-        SRC="/app/ecosia/desktop"
-        install -Dm644 -t /app/share/applications "$SRC/org.ecosia.Browser.desktop"
-        install -Dm644 -t /app/share/metainfo "$SRC/org.ecosia.Browser.metainfo.xml"
-        install -Dm644 "$SRC/ecosia.svg" /app/share/icons/hicolor/scalable/apps/org.ecosia.Browser.svg
-        rm -rf $SRC
-
+      - unsquashfs -quiet -no-progress ecosia.snap
+      - mv squashfs-root/app/share/icons /app/share/icons
+      - mv squashfs-root/app/share/metainfo /app/share/metainfo
+      - mv squashfs-root/opt/ecosia /app/share/ecosia
+      - mv squashfs-root/usr/share/applications /app/share/applications
+      - mv launch.sh /app/bin/ecosiabrowser
+      - chmod +X /app/bin/ecosiabrowser
     sources:
-      - type: archive
-        url: https://app-cms-repo.ecosia-browser.net/f4d3472f-762e-4aea-a1ae-5fb94d0b561d/build/148.1.7778.10/ecosiabrowser-148.1.7778.10-linux-amd64.tar.xz
-        sha256: 6233d7685212a955c4ebf9ac085e5998c62cbafb2fdb50140f42be61a916fc14
-        dest: ecosia
+      - type: file
+        url: https://api.snapcraft.io/api/v1/snaps/download/2MakkUunZD1vJLykl5QmmVDQAZdE84wY_6.snap
+        sha256: f6951358f1afa48e01dcc97761aaf3fc937bc9cc417e8661dd92c1bebca7d62d
+        dest-filename: ecosia.snap
+        x-checker-data:
+          type: snapcraft
+          name: ecosia
+          channel: stable
+          is-main-source: true
       - type: script
-        dest-filename: ecosiabrowser.sh
+        dest-filename: launch.sh
         commands:
-          - |
-            export ZYPAK_EXPOSE_WIDEVINE_PATH=$HOME/.var/app/org.ecosia.Browser/config/EcosiaBrowser/WidevineCdm
-            export CHROME_WRAPPER="/app/bin/ecosiabrowser"
-            exec /app/bin/zypak-wrapper.sh /app/ecosia/chrome --class=org.ecosia.Browser ${CHROME_FLAGS:-} "$@"
+          - /app/share/ecosia/chrome --no-sandbox $@
